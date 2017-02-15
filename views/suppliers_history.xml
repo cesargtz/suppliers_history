@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+<data>
+    <record model="ir.ui.view" id="suppliers_history_view_inherit">
+        <field name="name">suppliers_history_view</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@string='Sales &amp; Purchases']" position="after">
+                <page string="History">
+                     <field name="contracts"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</data>
+</openerp>
