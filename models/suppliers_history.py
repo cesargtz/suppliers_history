@@ -1,26 +1,36 @@
 # -*- coding: utf-8 -*-
+import time
 
 from openerp import models, fields, api
 
 
 class Suppliers_History(models.Model):
-    _inherit = 'res.partner'
-    # _name = 'suppliers.history'
+    _name = 'suppliers.history'
 
-    contracts = fields.One2many('purchase.order', 'partner_id',selection="_compute_date_order")
-    # date_cnt = fields.Selection(compute="_compute_date_order",
-    #                        readonly=True, store=False)
+    res_partner_id = fields.Many2one('res.partner')
+    date = fields.Char()
+    hired = fields.Float()
+    delivered = fields.Float()
+    pending = fields.Float(compute="_compute_pending", store=False, readonly=True)
+    progressbar = fields.Float(compute="_compute_progressbar")
 
-    @api.returns
-    @api.depends('contracts')
-    def _compute_date_order(self):
-        res = {}
-        for record in self.contracts:
-            res[record.partner_id] = str(record.date_order)
-        print ("pruebas:  ", res)
-        return res
+    @api.one
+    @api.depends('hired','delivered')
+    def _compute_pending(self):
+        self.pending = self.hired - self.delivered
 
-# class suppliers_history(models.Model):
-#     _inherit = 'res.partner'
+    @api.one
+    @api.depends('hired','delivered')
+    def _compute_progressbar(self):
+        if self.hired and self.delivered:
+            self.progressbar = (self.delivered * 100) / self.hired 
+    
+    # @api.one
+    # def _compute_year(self):
+    #     self.date = time.strftime("%Y")  #solo se ejecuta al guardar el registro//Eror
+    #     str(time.strftime("%Y"))
 
-#     history = fields.One2many('suppliers_history', 'contracts')
+class Record_Partner(models.Model):
+    _inherit = "res.partner"
+
+    suppliers_history_ids = fields.One2many('suppliers.history','res_partner_id')
