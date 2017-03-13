@@ -23,9 +23,22 @@
             <xpath expr="//page[@string='Contacts']" position="before">
                 <page string="History">
                   <tree>
+                     <!-- <field name="last_year_contract"/> -->
                      <field name="suppliers_history_ids"/>
                   </tree>
                 </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="suppliers_history_filter_inherit">
+        <field name="name">suppliers_history_filter</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@string='Country']" position="before">
+                <filter name="group_by_date_history" string="Historial"
+                    context="{'group_by':'last_year_contract'}"/>
             </xpath>
         </field>
     </record>
