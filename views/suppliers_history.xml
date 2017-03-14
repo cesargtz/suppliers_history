@@ -23,7 +23,8 @@
             <xpath expr="//page[@string='Contacts']" position="before">
                 <page string="History">
                   <tree>
-                     <!-- <field name="last_year_contract"/> -->
+                     <!-- <field name="last_year_contract"/>
+                     <field name="tons_hired"/> -->
                      <field name="suppliers_history_ids"/>
                   </tree>
                 </page>

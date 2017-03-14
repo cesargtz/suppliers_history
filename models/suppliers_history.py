@@ -34,16 +34,35 @@ class Record_Partner(models.Model):
     _inherit = "res.partner"
 
     suppliers_history_ids = fields.One2many('suppliers.history','res_partner_id')
-    last_year_contract = fields.Char()
+    last_year_contract = fields.Char(compute="_compute_last_year", store=True)
+    tons_hired = fields.Float(compute="_compute_hired")
 
-    @api.onchange('suppliers_history_ids')
+    # @api.onchange('suppliers_history_ids')
+    @api.one
+    @api.depends('suppliers_history_ids')
     def _compute_last_year(self):
         year = 0
         for line in self.suppliers_history_ids:
-            if line.date.isdigit():
-                if int(line.date) > year:
-                    year = int(line.date)
+            try:
+                if not isinstance(line.date, int):
+                    if int(line.date) > year:
+                        year = int(line.date)
+            except ValueError:
+                year = 0
         if year > 1:
             self.last_year_contract = str(year)
         else:
             self.last_year_contract = ''
+
+    @api.one
+    @api.depends('suppliers_history_ids')
+    def _compute_hired(self):
+        year = 0
+        for line in self.suppliers_history_ids:
+            try:
+                if not isinstance(line.date, int):
+                    if int(line.date) > year:
+                        year = int(line.date)
+                        self.tons_hired = line.hired
+            except ValueError:
+                year = 0
